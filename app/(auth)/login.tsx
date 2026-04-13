@@ -65,14 +65,11 @@ export default function Login() {
       contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 48 }}
     >
       <View className="items-center mb-8">
-      <View className="items-center mb-8">
             <View className="bg-brand-blue dark:bg-brand-azure p-4 rounded-3xl mb-4 shadow-sm">
               <Gamepad2 size={40} color="#ffffff" />
             </View>
             <Text className="text-gray-900 dark:text-white text-3xl font-black tracking-tight">Panel Roblox</Text>
           </View>
-        <Text className="text-gray-900 dark:text-white text-3xl font-black tracking-tight">Panel Roblox</Text>
-      </View>
 
       <View className="bg-gray-50 dark:bg-brand-dark rounded-3xl p-6 border border-gray-100 dark:border-gray-900 shadow-sm">
         <View className="gap-2">
