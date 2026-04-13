@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { View, Text, ScrollView, ActivityIndicator, Alert } from 'react-native'
 import { useAuth } from '../../lib/useAuth'
 import { getJugadores, moderarJugador, entregarDiamantes, type ReporteMision } from '../../lib/supabase'
-import PlayerTable from '../../components/PlayerTable' // Importamos el nuevo componente
+import PlayerTable from '../../components/PlayerTable' 
 
 export default function Panel() {
   const { isAdmin } = useAuth()
@@ -22,8 +22,6 @@ export default function Panel() {
 
   useEffect(() => { cargar() }, [])
 
-  // LÓGICA DE AGRUPACIÓN:
-  // Convertimos la lista plana en un objeto: { "antony8752": [mision1, mision2], ... }
   const datosAgrupados = reportes.reduce((acc, item) => {
     if (!acc[item.player_name]) acc[item.player_name] = []
     acc[item.player_name].push(item)
@@ -32,32 +30,35 @@ export default function Panel() {
 
   if (loading) {
     return (
-      <View className="flex-1 bg-gray-950 items-center justify-center">
-        <ActivityIndicator color="#818cf8" size="large" />
+      <View className="flex-1 bg-white dark:bg-brand-black items-center justify-center">
+        <ActivityIndicator color="#28D6F7" size="large" />
       </View>
     )
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-950">
-      <View className="px-4 pt-14 pb-6 gap-4">
-        <Text className="text-white text-2xl font-bold">Panel de jugadores</Text>
-        <Text className="text-gray-400 text-sm">
-          {Object.keys(datosAgrupados).length} jugadores únicos registrados
-        </Text>
+    <ScrollView className="flex-1 bg-white dark:bg-brand-black">
+      <View className="px-6 pt-14 pb-6 gap-6">
+        <View>
+          <Text className="text-gray-900 dark:text-white text-3xl font-black tracking-tight">Panel de jugadores</Text>
+          <Text className="text-brand-blue dark:text-brand-sky text-sm font-semibold mt-1">
+            {Object.keys(datosAgrupados).length} jugadores únicos registrados
+          </Text>
+        </View>
 
-        {/* Renderizamos una TABLA por cada nombre de jugador único */}
-        {Object.keys(datosAgrupados).map((playerName) => (
-          <PlayerTable
-            key={playerName}
-            playerName={playerName}
-            misiones={datosAgrupados[playerName]}
-            isAdmin={isAdmin}
-            onKick={() => moderarJugador(playerName, 'kick', 'Expulsado desde el Panel')}
-            onBan={() => moderarJugador(playerName, 'ban', 'Baneado desde el Panel')}
-            onDiamantes={(cantidad) => entregarDiamantes(playerName, cantidad)}
-          />
-        ))}
+        <View>
+          {Object.keys(datosAgrupados).map((playerName) => (
+            <PlayerTable
+              key={playerName}
+              playerName={playerName}
+              misiones={datosAgrupados[playerName]}
+              isAdmin={isAdmin}
+              onKick={() => moderarJugador(playerName, 'kick', 'Expulsado desde el Panel')}
+              onBan={() => moderarJugador(playerName, 'ban', 'Baneado desde el Panel')}
+              onDiamantes={(cantidad) => entregarDiamantes(playerName, cantidad)}
+            />
+          ))}
+        </View>
       </View>
     </ScrollView>
   )

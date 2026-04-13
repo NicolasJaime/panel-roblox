@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router'
-import { Text } from 'react-native'
 import { useTheme } from '../../lib/useTheme'
+import { Home, Gamepad2, Settings } from 'lucide-react-native' // <--- Importamos los íconos
 
 export default function MainLayout() {
   const { isDark } = useTheme()
@@ -10,10 +10,12 @@ export default function MainLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: { 
-          backgroundColor: isDark ? '#111827' : '#ffffff', 
-          borderTopColor: isDark ? '#1f2937' : '#e5e7eb' 
+          backgroundColor: isDark ? '#000000' : '#ffffff', 
+          borderTopColor: isDark ? '#111111' : '#f3f4f6',
+          elevation: 0,
+          shadowOpacity: 0
         },
-        tabBarActiveTintColor: '#818cf8',
+        tabBarActiveTintColor: isDark ? '#28D6F7' : '#2650F0',
         tabBarInactiveTintColor: '#6b7280',
       }}
     >
@@ -21,21 +23,21 @@ export default function MainLayout() {
         name="index"
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>🏠</Text>,
+          tabBarIcon: ({ color }) => <Home color={color} size={24} />,
         }}
       />
       <Tabs.Screen
         name="panel"
         options={{
           title: 'Panel',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>🎮</Text>,
+          tabBarIcon: ({ color }) => <Gamepad2 color={color} size={24} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: 'Ajustes',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 18 }}>⚙️</Text>,
+          tabBarIcon: ({ color }) => <Settings color={color} size={24} />,
         }}
       />
     </Tabs>

@@ -1,4 +1,5 @@
-import { TouchableOpacity, Text, ActivityIndicator } from 'react-native'
+import { TouchableOpacity, Text, ActivityIndicator, View } from 'react-native'
+import { ReactNode } from 'react'
 
 type Props = {
   label: string
@@ -6,23 +7,24 @@ type Props = {
   loading?: boolean
   variant?: 'primary' | 'danger' | 'outline' | 'success'
   disabled?: boolean
+  icon?: ReactNode // <--- Agregamos esta propiedad para los íconos
 }
 
 const variants = {
-  primary: 'bg-indigo-600 active:bg-indigo-700',
+  primary: 'bg-brand-blue dark:bg-brand-azure active:opacity-80',
   danger:  'bg-red-500 active:bg-red-600',
-  outline: 'border border-indigo-500 bg-transparent',
+  outline: 'border border-brand-blue dark:border-brand-cyan bg-transparent',
   success: 'bg-emerald-500 active:bg-emerald-600',
 }
 
 const textVariants = {
   primary: 'text-white',
   danger:  'text-white',
-  outline: 'text-indigo-500',
+  outline: 'text-brand-blue dark:text-brand-cyan font-bold',
   success: 'text-white',
 }
 
-export default function Button({ label, onPress, loading, variant = 'primary', disabled }: Props) {
+export default function Button({ label, onPress, loading, variant = 'primary', disabled, icon }: Props) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -30,6 +32,8 @@ export default function Button({ label, onPress, loading, variant = 'primary', d
       className={`rounded-xl px-4 py-3 items-center justify-center flex-row gap-2 ${variants[variant]} ${disabled ? 'opacity-50' : ''}`}
     >
       {loading && <ActivityIndicator size="small" color="#fff" />}
+      {/* Si hay un ícono y no está cargando, lo mostramos */}
+      {icon && !loading && <View>{icon}</View>}
       <Text className={`font-semibold text-sm ${textVariants[variant]}`}>
         {label}
       </Text>

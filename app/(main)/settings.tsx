@@ -9,48 +9,47 @@ export default function Settings() {
   const { isDark, toggleTheme } = useTheme()
 
   return (
-    // Fondo: Blanco en claro / Gris oscuro en Dark Mode
-    <ScrollView className="flex-1 bg-white dark:bg-gray-950">
+    <ScrollView className="flex-1 bg-white dark:bg-brand-black">
       <View className="px-6 pt-14 pb-6 gap-6">
 
-        <Text className="text-gray-900 dark:text-white text-3xl font-bold">Ajustes</Text>
+        <Text className="text-gray-900 dark:text-white text-3xl font-black tracking-tight">Ajustes</Text>
 
         {/* Tarjeta de Cuenta */}
-        <View className="bg-gray-100 dark:bg-gray-900 rounded-3xl p-5 gap-2 border border-gray-200 dark:border-gray-800">
-          <Text className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest">Cuenta</Text>
-          <Text className="text-gray-900 dark:text-white text-base font-medium">{user?.email}</Text>
+        <View className="bg-gray-50 dark:bg-brand-dark rounded-3xl p-6 gap-2 border border-gray-100 dark:border-gray-900 shadow-sm">
+          <Text className="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-widest">Cuenta</Text>
+          <Text className="text-gray-900 dark:text-white text-base font-bold">{user?.email}</Text>
           {isAdmin && (
-            <View className="self-start bg-indigo-100 dark:bg-indigo-900/40 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-800">
-              <Text className="text-indigo-600 dark:text-indigo-300 text-xs font-bold text-center">Administrador</Text>
+            <View className="mt-1 self-start bg-brand-blue/10 dark:bg-brand-cyan/20 px-4 py-1.5 rounded-full border border-brand-blue/20 dark:border-brand-cyan/30">
+              <Text className="text-brand-blue dark:text-brand-cyan text-xs font-black text-center uppercase tracking-wider">Administrador</Text>
             </View>
           )}
         </View>
 
         {/* Tarjeta de Apariencia */}
-        <View className="bg-gray-100 dark:bg-gray-900 rounded-3xl p-5 border border-gray-200 dark:border-gray-800">
-          <Text className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">Apariencia</Text>
+        <View className="bg-gray-50 dark:bg-brand-dark rounded-3xl p-6 border border-gray-100 dark:border-gray-900 shadow-sm">
+          <Text className="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">Apariencia</Text>
           <View className="flex-row items-center justify-between">
             <View>
-              <Text className="text-gray-900 dark:text-white text-base font-medium">Modo oscuro</Text>
-              <Text className="text-gray-500 text-xs">Cambia el aspecto visual de la app</Text>
+              <Text className="text-gray-900 dark:text-white text-base font-bold">Modo oscuro</Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-xs mt-1">Cambia el aspecto visual de la app</Text>
             </View>
             <Switch
               value={isDark}
               onValueChange={toggleTheme}
-              trackColor={{ false: '#d1d5db', true: '#4f46e5' }}
-              thumbColor={Platform.OS === 'ios' ? '#fff' : isDark ? '#fff' : '#f4f3f4'}
+              trackColor={{ false: '#e5e7eb', true: '#2650F0' }}
+              thumbColor={Platform.OS === 'ios' ? '#fff' : isDark ? '#28D6F7' : '#ffffff'}
             />
           </View>
         </View>
 
         {/* Botón Salir */}
-        <View className="mt-4">
+        <View className="mt-2">
           <Button label="Cerrar sesión" onPress={signOut} variant="danger" />
         </View>
 
       </View>
 
-      <SocialFooter isDark={isDark} />
+      <SocialFooter />
     </ScrollView>
   )
 }

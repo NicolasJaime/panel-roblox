@@ -4,6 +4,7 @@ import { router } from 'expo-router'
 import { supabase } from '../../lib/supabase'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
+import { Gamepad2 } from 'lucide-react-native'
 
 export default function Register() {
   const [email, setEmail] = useState('')
@@ -28,26 +29,37 @@ export default function Register() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-950" contentContainerClassName="flex-grow justify-center px-6 py-12">
+    <ScrollView 
+      className="flex-1 bg-white dark:bg-brand-black" 
+      contentContainerClassName="flex-grow justify-center px-6 py-12"
+    >
       <View className="items-center mb-8">
-        <Text className="text-4xl mb-2">🎮</Text>
-        <Text className="text-white text-2xl font-bold">Crear cuenta</Text>
-        <Text className="text-gray-400 text-sm mt-1">Únete al panel de misiones</Text>
+      <View className="items-center mb-8">
+        <View className="bg-brand-blue dark:bg-brand-azure p-4 rounded-3xl mb-4 shadow-sm">
+          <Gamepad2 size={40} color="#ffffff" />
+        </View>
+        <Text className="text-gray-900 dark:text-white text-3xl font-black tracking-tight">Panel Roblox</Text>
+      </View>
+        <Text className="text-gray-900 dark:text-white text-3xl font-black tracking-tight">Crear cuenta</Text>
+        <Text className="text-gray-500 dark:text-brand-sky text-sm mt-1 font-medium">Únete al panel de misiones</Text>
       </View>
 
-      <View className="bg-gray-900 rounded-2xl p-6 gap-4">
-        <Input label="Correo" isDark value={email} onChangeText={setEmail}
+      <View className="bg-gray-50 dark:bg-brand-dark rounded-3xl p-6 gap-2 border border-gray-100 dark:border-gray-900 shadow-sm">
+        <Input label="Correo" value={email} onChangeText={setEmail}
           placeholder="correo@ejemplo.com" keyboardType="email-address" autoCapitalize="none" />
-        <Input label="Contraseña" isDark value={password} onChangeText={setPassword}
+        <Input label="Contraseña" value={password} onChangeText={setPassword}
           placeholder="••••••••" secureTextEntry />
-        <Input label="Confirmar contraseña" isDark value={confirm} onChangeText={setConfirm}
+        <Input label="Confirmar contraseña" value={confirm} onChangeText={setConfirm}
           placeholder="••••••••" secureTextEntry />
-        <Button label="Registrarse" onPress={handleRegister} loading={loading} />
+        
+        <View className="mt-2">
+          <Button label="Registrarse" onPress={handleRegister} loading={loading} />
+        </View>
       </View>
 
-      <TouchableOpacity className="mt-4 items-center" onPress={() => router.back()}>
-        <Text className="text-gray-400 text-sm">
-          ¿Ya tienes cuenta? <Text className="text-indigo-400 font-semibold">Inicia sesión</Text>
+      <TouchableOpacity className="mt-8 items-center" onPress={() => router.back()}>
+        <Text className="text-gray-500 dark:text-gray-400 text-sm">
+          ¿Ya tienes cuenta? <Text className="text-brand-blue dark:text-brand-cyan font-bold">Inicia sesión</Text>
         </Text>
       </TouchableOpacity>
     </ScrollView>
