@@ -1,12 +1,12 @@
-import { useState } from 'react'
-import { View, Text, ScrollView, Alert, TouchableOpacity, Platform } from 'react-native'
-import { router } from 'expo-router'
-import { supabase } from '../../lib/supabase'
-import * as WebBrowser from 'expo-web-browser'
 import * as Linking from 'expo-linking'
+import { router } from 'expo-router'
+import * as WebBrowser from 'expo-web-browser'
+import { Gamepad2 } from 'lucide-react-native'
+import { useState } from 'react'
+import { Alert, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
-import { Gamepad2 } from 'lucide-react-native'
+import { supabase } from '../../lib/supabase'
 
 WebBrowser.maybeCompleteAuthSession()
 
@@ -24,7 +24,9 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     setLoading(true)
-    const redirectTo = Linking.createURL('/(auth)/login')
+    
+    // AQUÍ ESTÁ EL CAMBIO CLAVE: Obligamos a Expo a usar tu esquema nativo
+    const redirectTo = Linking.createURL('/(auth)/login', { scheme: 'panelroblox' })
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -41,19 +43,25 @@ export default function Login() {
         const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
         
         if (result.type === 'success' && result.url) {
-          const urlParts = result.url.split('#')
-          const params = new URLSearchParams(urlParts[1] || urlParts[0].split('?')[1])
-          
-          const access_token = params.get('access_token')
-          const refresh_token = params.get('refresh_token')
+          const parsedUrl = Linking.parse(result.url)
+          const params = parsedUrl.queryParams || {}
 
-          if (access_token && refresh_token) {
-            await supabase.auth.setSession({ access_token, refresh_token })
+          if (params.code) {
+            const { error: sessionError } = await supabase.auth.exchangeCodeForSession(String(params.code))
+            if (sessionError) throw sessionError
+          } 
+          else if (params.access_token && params.refresh_token) {
+            await supabase.auth.setSession({ 
+              access_token: String(params.access_token), 
+              refresh_token: String(params.refresh_token) 
+            })
+          } else {
+            throw new Error('La redirección de Google no incluyó credenciales válidas.')
           }
         }
       }
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Error en autenticación')
+      Alert.alert('Error en Google Login', error.message || 'Error desconocido al autenticar.')
     } finally {
       setLoading(false)
     }
@@ -65,11 +73,11 @@ export default function Login() {
       contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 48 }}
     >
       <View className="items-center mb-8">
-            <View className="bg-brand-blue dark:bg-brand-azure p-4 rounded-3xl mb-4 shadow-sm">
-              <Gamepad2 size={40} color="#ffffff" />
-            </View>
-            <Text className="text-gray-900 dark:text-white text-3xl font-black tracking-tight">Panel Roblox</Text>
-          </View>
+        <View className="bg-brand-blue dark:bg-brand-azure p-4 rounded-3xl mb-4 shadow-sm">
+          <Gamepad2 size={40} color="#ffffff" />
+        </View>
+        <Text className="text-gray-900 dark:text-white text-3xl font-black tracking-tight">Panel Roblox</Text>
+      </View>
 
       <View className="bg-gray-50 dark:bg-brand-dark rounded-3xl p-6 border border-gray-100 dark:border-gray-900 shadow-sm">
         <View className="gap-2">
