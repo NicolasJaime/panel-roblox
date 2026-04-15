@@ -8,22 +8,32 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // 1. Verificación inicial al abrir la app
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       if (session?.user?.email) {
-        checkIsAdmin(session.user.email).then(setIsAdmin)
+        checkIsAdmin(session.user.email).then((adminStatus) => {
+          setIsAdmin(adminStatus)
+          setLoading(false)
+        })
+      } else {
+        setLoading(false)
       }
-      setLoading(false)
     })
 
+    // 2. Escucha de cambios (cuando el usuario inicia o cierra sesión)
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session)
+      
       if (session?.user?.email) {
         const admin = await checkIsAdmin(session.user.email)
         setIsAdmin(admin)
       } else {
         setIsAdmin(false)
       }
+      
+      // Detenemos la carga SOLO cuando ya tenemos el estado final (admin o no)
+      setLoading(false)
     })
 
     return () => listener.subscription.unsubscribe()

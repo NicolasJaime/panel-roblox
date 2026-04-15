@@ -25,7 +25,7 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     setLoading(true)
     
-    // Usamos el esquema exacto que configuramos en Google Cloud y Supabase
+    // Usamos el esquema exacto configurado en Google Cloud y Supabase
     const redirectTo = 'panelroblox://'
 
     try {
@@ -43,13 +43,12 @@ export default function Login() {
         const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
         
         if (result.type === 'success' && result.url) {
-          // 1. TU EXTRACCIÓN MANUAL: Infalible contra el error del '#' en Android
+          // 1. Extracción manual para evitar el problema del '#' en Android
           const urlParts = result.url.split('#')
           const queryString = urlParts[1] || urlParts[0].split('?')[1]
           
           if (!queryString) throw new Error('No se recibieron credenciales en la URL.')
 
-          // Extraemos los tokens de la cadena
           const params = new URLSearchParams(queryString)
           const access_token = params.get('access_token')
           const refresh_token = params.get('refresh_token')
@@ -62,9 +61,9 @@ export default function Login() {
             })
             if (sessionError) throw sessionError
 
-            // 3. LA CURA AL USUARIO FANTASMA: Obligamos a Supabase a descargar el perfil del usuario
-            const { error: refreshError } = await supabase.auth.refreshSession()
-            if (refreshError) throw refreshError
+            // 3. PASO CLAVE: Forzamos la descarga del perfil completo del usuario
+            const { error: userError } = await supabase.auth.getUser()
+            if (userError) throw userError
 
           } else {
             throw new Error('La redirección de Google no incluyó los tokens necesarios.')
