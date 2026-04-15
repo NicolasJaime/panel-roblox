@@ -1,9 +1,10 @@
-import { View, Text, ScrollView, TouchableOpacity, Linking } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native'
 import { router } from 'expo-router'
 import { useAuth } from '../../lib/useAuth'
 import { useTheme } from '../../lib/useTheme'
 import Button from '../../components/Button'
-import { Newspaper, Instagram, Gamepad2, Sparkles } from 'lucide-react-native'
+import { Newspaper, Gamepad2, Sparkles } from 'lucide-react-native'
+import { Ionicons } from '@expo/vector-icons'
 
 export default function Home() {
   const { user, isAdmin } = useAuth()
@@ -43,7 +44,8 @@ export default function Home() {
               onPress={() => Linking.openURL('https://instagram.com/TU_USUARIO')}
               className="flex-row items-center gap-2 bg-pink-500/10 dark:bg-pink-500/20 px-3 py-2 rounded-xl"
             >
-              <Instagram size={18} color={isDark ? '#f472b6' : '#ec4899'} />
+              {/* Aquí usamos Ionicons que viene seguro en Expo */}
+              <Ionicons name="logo-instagram" size={18} color={isDark ? '#f472b6' : '#ec4899'} />
               <Text className="text-pink-500 dark:text-pink-400 text-xs font-bold uppercase tracking-wider">Instagram</Text>
             </TouchableOpacity>
           </View>
