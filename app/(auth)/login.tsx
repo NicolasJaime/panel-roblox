@@ -25,8 +25,8 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     setLoading(true)
     
-    // AQUÍ ESTÁ EL CAMBIO CLAVE: Obligamos a Expo a usar tu esquema nativo
-    const redirectTo = Linking.createURL('/(auth)/login', { scheme: 'panelroblox' })
+    // Usamos el esquema exacto que configuramos en Google Cloud y Supabase
+    const redirectTo = 'panelroblox://'
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -43,20 +43,31 @@ export default function Login() {
         const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo)
         
         if (result.type === 'success' && result.url) {
-          const parsedUrl = Linking.parse(result.url)
-          const params = parsedUrl.queryParams || {}
+          // 1. TU EXTRACCIÓN MANUAL: Infalible contra el error del '#' en Android
+          const urlParts = result.url.split('#')
+          const queryString = urlParts[1] || urlParts[0].split('?')[1]
+          
+          if (!queryString) throw new Error('No se recibieron credenciales en la URL.')
 
-          if (params.code) {
-            const { error: sessionError } = await supabase.auth.exchangeCodeForSession(String(params.code))
-            if (sessionError) throw sessionError
-          } 
-          else if (params.access_token && params.refresh_token) {
-            await supabase.auth.setSession({ 
-              access_token: String(params.access_token), 
-              refresh_token: String(params.refresh_token) 
+          // Extraemos los tokens de la cadena
+          const params = new URLSearchParams(queryString)
+          const access_token = params.get('access_token')
+          const refresh_token = params.get('refresh_token')
+
+          if (access_token && refresh_token) {
+            // 2. Establecemos la sesión
+            const { error: sessionError } = await supabase.auth.setSession({ 
+              access_token, 
+              refresh_token 
             })
+            if (sessionError) throw sessionError
+
+            // 3. LA CURA AL USUARIO FANTASMA: Obligamos a Supabase a descargar el perfil del usuario
+            const { error: refreshError } = await supabase.auth.refreshSession()
+            if (refreshError) throw refreshError
+
           } else {
-            throw new Error('La redirección de Google no incluyó credenciales válidas.')
+            throw new Error('La redirección de Google no incluyó los tokens necesarios.')
           }
         }
       }
